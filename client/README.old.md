@@ -1,1 +1,1 @@
-# chat-frontend
+# chat-app client

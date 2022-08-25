@@ -1,26 +1,41 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import styled from "styled-components";
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import { toast } from "react-toastify";
 import { useNavigate, Link } from "react-router-dom";
 import { registerRoute } from "../utils/APIRoutes";
+import Background from "../assets/background.png";
+
+const sectionStyle = {
+  height: "100vh",
+  width: "100vw",
+};
+
+const imageStyle = {
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  backgroundImage: `url(${Background})`,
+  backgroundRepeat: "no-repeat",
+  backgroundPosition: "center",
+  backgroundSize: "auto auto",
+  padding: "30px",
+};
 
 export default function Register() {
-  const navigate = useNavigate();
-
   const [values, setValues] = useState({
     username: "",
     email: "",
     password: "",
     confirmPassword: "",
   });
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (localStorage.getItem(process.env.REACT_APP_LOCALHOST_KEY)) {
       navigate("/");
     }
-  }, []);
+  }, [navigate]);
 
   const handleChange = (event) => {
     setValues({ ...values, [event.target.name]: event.target.value });
@@ -29,28 +44,16 @@ export default function Register() {
   const handleValidation = () => {
     const { password, confirmPassword, username, email } = values;
     if (password !== confirmPassword) {
-      toast.error("Password and confirm password should be same.", {
-        position: "top-right",
-        autoClose: 5000,
-      });
+      toast.error("Password and confirmation password must be the same.");
       return false;
     } else if (username.length < 3) {
-      toast.error("Username should be greater than 2 characters.", {
-        position: "top-right",
-        autoClose: 5000,
-      });
+      toast.error("Username must contain more than 2 characters.");
       return false;
     } else if (password.length < 6) {
-      toast.error("Password should be equal or greater than 6 characters.", {
-        position: "top-right",
-        autoClose: 5000,
-      });
+      toast.error("Password must be 6 or more characters.");
       return false;
     } else if (email === "") {
-      toast.error("Email is required.", {
-        position: "top-right",
-        autoClose: 5000,
-      });
+      toast.error("Email is required.");
       return false;
     }
 
@@ -68,10 +71,7 @@ export default function Register() {
       });
 
       if (data.status === false) {
-        toast.error(data.msg, {
-          position: "top-right",
-          autoClose: 5000,
-        });
+        toast.error(data.msg);
       }
       if (data.status === true) {
         localStorage.setItem(
@@ -84,55 +84,49 @@ export default function Register() {
   };
 
   return (
-    <>
-      <FormContainer>
-        <form action="" onSubmit={(event) => handleSubmit(event)}>
-          <h2 className="title">Chat</h2>
-          <input
-            type="text"
-            placeholder="Name"
-            name="username"
-            onChange={(e) => handleChange(e)}
-          />
-          <input
-            type="email"
-            placeholder="Email"
-            name="email"
-            onChange={(e) => handleChange(e)}
-          />
-          <input
-            type="password"
-            placeholder="Password"
-            name="password"
-            onChange={(e) => handleChange(e)}
-          />
-          <input
-            type="password"
-            placeholder="Confirm Password"
-            name="confirmPassword"
-            onChange={(e) => handleChange(e)}
-          />
-          <button type="submit">Create User</button>
-          <span>
-            Have you an account? <Link to="/login">Login.</Link>
-          </span>
-        </form>
-      </FormContainer>
-      <ToastContainer />
-    </>
+    <section style={imageStyle}>
+      <div style={sectionStyle}>
+        <FormContainer>
+          <form action="" onSubmit={(event) => handleSubmit(event)}>
+            <h2 className="title">Chat</h2>
+            <input
+              type="text"
+              placeholder="Name"
+              name="username"
+              onChange={(e) => handleChange(e)}
+            />
+            <input
+              type="email"
+              placeholder="Email"
+              name="email"
+              onChange={(e) => handleChange(e)}
+            />
+            <input
+              type="password"
+              placeholder="Password"
+              name="password"
+              onChange={(e) => handleChange(e)}
+            />
+            <input
+              type="password"
+              placeholder="Confirm Password"
+              name="confirmPassword"
+              onChange={(e) => handleChange(e)}
+            />
+            <button type="submit">Create User</button>
+            <span>
+              Have you an account? <Link to="/login">Login.</Link>
+            </span>
+          </form>
+        </FormContainer>
+      </div>
+    </section>
   );
 }
 
 const FormContainer = styled.div`
-  height: 100vh;
-  width: 100vw;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  gap: 1rem;
-  align-items: center;
-  background-color: #d8dadd;
-  
+  @media screen and (max-width: 720px) {
+    padding: 15px;
   }
 
   form {
@@ -140,9 +134,18 @@ const FormContainer = styled.div`
     flex-direction: column;
     width: 35%;
     gap: 2rem;
+    margin-left: auto;
+    margin-right: auto;
     background-color: #00000076;
     border-radius: 2rem;
     padding: 3rem 5rem;
+    @media screen and (max-width: 720px) {
+      width: 100%;
+      max-width: 720px;
+    }
+    @media screen and (min-width: 720px) and (max-width: 1080px) {
+      width: 50%;
+    }
   }
   h2 {
     font-size: 25px;
@@ -178,7 +181,7 @@ const FormContainer = styled.div`
   }
   span {
     color: white;
-    
+
     a {
       color: #4e0eff;
       text-decoration: none;

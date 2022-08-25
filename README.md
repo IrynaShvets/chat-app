@@ -1,14 +1,16 @@
 # chat-app
 
-## client
+## Install client
 
-cd client
-yarn
+## cd client
 
-## server
+## yarn
 
-cd server
-yarn
+## Install server
+
+## cd server
+
+## yarn
 
 ## In server's directory is a .env file. Change the value to your own
 

@@ -3,46 +3,54 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { io } from "socket.io-client";
 import styled from "styled-components";
+import { toast } from "react-toastify";
 import { allUsersRoute, host } from "../utils/APIRoutes";
 import ChatContainer from "../components/ChatContainer";
 import Contacts from "../components/Contacts";
-import { api } from "../services/api";
-/* import Welcome from "../components/Welcome"; */
+import Background from "../assets/background.png";
+
+const sectionStyle = {
+  width: "590px",
+  height: "600px",
+};
+
+const imageStyle = {
+  display: "flex",
+  justifyContent: "center",
+  alignItems: "center",
+  backgroundImage: `url(${Background})`,
+  backgroundRepeat: "no-repeat",
+  backgroundPosition: "contain",
+  backgroundSize: "auto auto",
+};
 
 export default function Chat() {
-  const navigate = useNavigate();
-  const socket = useRef();
   const [contacts, setContacts] = useState([]);
   const [currentChat, setCurrentChat] = useState("");
   const [currentUser, setCurrentUser] = useState("");
   const [search, setSearch] = useState("");
-  const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const navigate = useNavigate();
+  const socket = useRef();
 
-  useEffect(async () => {
-    if (!localStorage.getItem(process.env.REACT_APP_LOCALHOST_KEY)) {
-      navigate("/login");
-    } else {
-      setCurrentUser(await JSON.parse(localStorage.getItem(process.env.REACT_APP_LOCALHOST_KEY)));
-    }
-  }, []);
-
-  /* useEffect(() => {
+  useEffect(() => {
     const fetchChat = async () => {
-      setLoading(true);
       try {
-        const { value } = await api();
-        setTimeout(() => {
-          console.log(value);
-        }, 10000);
-      } catch {
+        if (!localStorage.getItem(process.env.REACT_APP_LOCALHOST_KEY)) {
+          navigate("/login");
+        } else {
+          setCurrentUser(
+            await JSON.parse(
+              localStorage.getItem(process.env.REACT_APP_LOCALHOST_KEY)
+            )
+          );
+        }
+      } catch (error) {
         setError(error.message);
-      } finally {
-        setLoading(false);
       }
     };
     fetchChat();
-  }, [error]); */
+  }, [navigate]);
 
   useEffect(() => {
     if (currentUser) {
@@ -51,16 +59,23 @@ export default function Chat() {
     }
   }, [currentUser]);
 
-  useEffect(async () => {
-    if (currentUser) {
-      if (currentUser.isAvatarImageSet) {
-        const data = await axios.get(`${allUsersRoute}/${currentUser._id}`);
-        setContacts(data.data);
-      } else {
-        navigate("/setAvatar");
+  useEffect(() => {
+    const fetchChat = async () => {
+      try {
+        if (currentUser) {
+          if (currentUser.isAvatarImageSet) {
+            const data = await axios.get(`${allUsersRoute}/${currentUser._id}`);
+            setContacts(data.data);
+          } else {
+            navigate("/setAvatar");
+          }
+        }
+      } catch (error) {
+        setError(error.message);
       }
-    }
-  }, [currentUser]);
+    };
+    fetchChat();
+  }, [currentUser, navigate]);
 
   const handleChatChange = (chat) => {
     setCurrentChat(chat);
@@ -85,13 +100,19 @@ export default function Chat() {
             changeChat={handleChatChange}
             onChange={changeSearch}
           />
-          {/* 
-            currentChat  === undefined ? (
-            <Welcome />
-          ) : (  ( */}
-          <ChatContainer currentChat={currentChat} socket={socket} />
+
+          {!currentChat ? (
+            <section style={imageStyle}>
+              <div style={sectionStyle}>
+                <h2>Hello {currentUser.username}</h2>
+              </div>
+            </section>
+          ) : (
+            <ChatContainer currentChat={currentChat} socket={socket} />
+          )}
         </div>
       </Container>
+      {error && toast.error(error.message)}
     </>
   );
 }

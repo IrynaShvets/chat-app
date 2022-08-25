@@ -1,18 +1,27 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { GrSearch } from "react-icons/gr";
+import { toast } from "react-toastify";
 
 export default function Contacts({ contacts, changeChat, value, onChange }) {
   const [currentUserName, setCurrentUserName] = useState(undefined);
   const [currentUserImage, setCurrentUserImage] = useState(undefined);
   const [currentSelected, setCurrentSelected] = useState(undefined);
+  const [error, setError] = useState(null);
 
-  useEffect(async () => {
-    const data = await JSON.parse(
-      localStorage.getItem(process.env.REACT_APP_LOCALHOST_KEY)
-    );
-    setCurrentUserName(data.username);
-    setCurrentUserImage(data.avatarImage);
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const data = await JSON.parse(
+          localStorage.getItem(process.env.REACT_APP_LOCALHOST_KEY)
+        );
+        setCurrentUserName(data.username);
+        setCurrentUserImage(data.avatarImage);
+      } catch (error) {
+        setError(error.message);
+      }
+    }
+    fetchData();
   }, []);
 
   const changeCurrentChat = (index, contact) => {
@@ -45,9 +54,6 @@ export default function Contacts({ contacts, changeChat, value, onChange }) {
                 />
               </LabelSearch>
             </div>
-            {/* <div className="username">
-              <h2>{currentUserName}</h2>
-            </div> */}
           </div>
 
           <div className="contacts">
@@ -76,16 +82,11 @@ export default function Contacts({ contacts, changeChat, value, onChange }) {
           </div>
         </Container>
       )}
+      {error && toast.error(error.message)}
     </>
   );
 }
 
-/* */
-/* grid - area: chat - message - list;
-  display: flex;
-  flex-direction: column-reverse;
-  padding: 0 20px;
-  overflow-y: scroll; */
 const Container = styled.div`
   display: grid;
   grid-template-rows: 25% 73% 2%;
@@ -164,7 +165,7 @@ const Container = styled.div`
     }
   }
 `;
-/*display: flex;align-items: center;gap: 2rem; justify-content: center; */
+
 const LabelSearch = styled.label``;
 
 const SearchIcon = styled.span`
@@ -172,7 +173,7 @@ const SearchIcon = styled.span`
   top: 97px;
   left: 25px;
 `;
-/*position: relative; width: 100%; */
+
 const InputSearch = styled.input`
   width: 100%;
   color: #000000bf;
