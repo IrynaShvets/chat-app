@@ -12,7 +12,7 @@
 
 ## yarn
 
-## In server's directory is a .env file. Change the value to your own
+## In server's directory is a .env file. Change the value to your own.
 
 ## server
 
