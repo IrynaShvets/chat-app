@@ -12,7 +12,6 @@ export default function ChatContainer({ currentChat, socket }) {
   const [messages, setMessages] = useState([]);
   const scrollRef = useRef();
   const [arrivalMessage, setArrivalMessage] = useState(null);
-  const [date, setDate] = useState(new Date(Date.now()).toLocaleString());
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [valueApi, setValueApi] = useState();
@@ -44,7 +43,7 @@ export default function ChatContainer({ currentChat, socket }) {
           from: data._id,
           to: currentChat._id,
         });
-        console.log(data);
+
         setMessages(response.data);
       } catch (error) {
         setError(error.message);
@@ -64,7 +63,7 @@ export default function ChatContainer({ currentChat, socket }) {
     getCurrentChat();
   }, [currentChat]);
 
-  const handleSendMsg = async (msg) => {
+  const handleSendMsg = async (msg, created) => {
     const data = await JSON.parse(
       localStorage.getItem(process.env.REACT_APP_LOCALHOST_KEY)
     );
@@ -77,22 +76,21 @@ export default function ChatContainer({ currentChat, socket }) {
       from: data._id,
       to: currentChat._id,
       message: msg,
-      date: date,
+      created: created,
     });
-
     const msgs = [...messages];
-    msgs.push({ fromSelf: true, message: msg, date: date });
-    setDate(date);
+    console.log(msgs);
+    msgs.push({ fromSelf: true, message: msg, created });
     setMessages(msgs);
   };
-  console.log(date);
+
   useEffect(() => {
     if (socket.current) {
-      socket.current.on("msg-recieve", (msg) => {
+      socket.current.on("msg-recieve", (msg, created) => {
         setArrivalMessage({
           fromSelf: false,
           message: msg,
-          date: date,
+          created,
         });
       });
     }
@@ -128,16 +126,12 @@ export default function ChatContainer({ currentChat, socket }) {
                     message.fromSelf ? "sended" : "recieved"
                   }`}
                 >
-                  <div className="content ">
-                    <p>{message.message}</p>
-                  </div>
-
-                  <p className="content-date">{date}</p>
+                  <p className="content">{message.message}</p>
+                  <p className="content-date">{message.created}</p>
                 </div>
               </div>
             );
           })}
-
           {valueApi && currentChat && (
             <p className="jokes" ref={scrollRef}>
               {valueApi}
@@ -186,10 +180,10 @@ const Container = styled.div`
     padding: 15px;
     display: flex;
     flex-direction: column;
-
+    gap: 0.5rem;
     background-color: #d8dadd;
     overflow-x: auto;
-    gap: 0.4rem;
+
     &::-webkit-scrollbar {
       width: 0.2rem;
       &-thumb {
@@ -203,10 +197,7 @@ const Container = styled.div`
     }
     .message {
       display: flex;
-      align-items: center;
       .content {
-        max-width: 40%;
-        overflow-wrap: break-word;
         padding: 15px;
         font-size: 1.1rem;
         border-radius: 1rem;
@@ -220,7 +211,10 @@ const Container = styled.div`
       justify-content: flex-end;
       .content {
         background-color: #73757783;
-        color: #00000080;
+        color: #000000;
+      }
+      .content-date {
+        color: #00000076;
       }
     }
     .recieved {
@@ -228,6 +222,9 @@ const Container = styled.div`
       .content {
         background-color: #23292eda;
         color: #fff;
+      }
+      .content-date {
+        color: #00000076;
       }
     }
     .jokes {

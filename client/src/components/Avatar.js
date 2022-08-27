@@ -104,21 +104,21 @@ export default function Avatar() {
           <div style={sectionStyle}>
             <Container>
               <div className="title-container">
-                <div class="example-grid" xyz="fade small stagger">
-                  <div className="squareWrapper">
-                    <div class="square xyz-in squareText">C</div>
-                    <div class="square xyz-in squareText">h</div>
-                    <div class="square xyz-in squareText">o</div>
-                    <div class="square xyz-in squareText">o</div>
-                    <div class="square xyz-in squareText">s</div>
-                    <div class="square xyz-in squareText last">e</div>
-                    <div class="square xyz-in squareText">a</div>
-                    <div class="square xyz-in squareText">v</div>
-                    <div class="square xyz-in squareText">a</div>
-                    <div class="square xyz-in squareText">t</div>
-                    <div class="square xyz-in squareText">a</div>
-                    <div class="square xyz-in squareText">r</div>
-                  </div>
+                <div className="example-grid" xyz="fade small stagger">
+                  <SquareWrapper>
+                    <div className="square xyz-in squareText">C</div>
+                    <div className="square xyz-in squareText">h</div>
+                    <div className="square xyz-in squareText">o</div>
+                    <div className="square xyz-in squareText">o</div>
+                    <div className="square xyz-in squareText">s</div>
+                    <div className="square xyz-in squareText last">e</div>
+                    <div className="square xyz-in squareText">a</div>
+                    <div className="square xyz-in squareText">v</div>
+                    <div className="square xyz-in squareText">a</div>
+                    <div className="square xyz-in squareText">t</div>
+                    <div className="square xyz-in squareText">a</div>
+                    <div className="square xyz-in squareText">r</div>
+                  </SquareWrapper>
                 </div>
 
                 <XyzTransitionGroup
@@ -126,7 +126,7 @@ export default function Avatar() {
                   xyz="fade small stagger"
                 >
                   {false &&
-                    [...Array(26)].map((_, index) => (
+                    [...Array(12)].map((_, index) => (
                       <div className="square" key={index} />
                     ))}
                 </XyzTransitionGroup>
@@ -162,7 +162,6 @@ export default function Avatar() {
 }
 
 const Container = styled.div`
-  flex-direction: column;
   padding: 40px;
   .loader {
     max-inline-size: 100%;
@@ -210,4 +209,9 @@ const Container = styled.div`
       color: #fff;
     }
   }
+`;
+
+const SquareWrapper = styled.div`
+  display: flex;
+  margin-bottom: 50px;
 `;

@@ -1,8 +1,8 @@
 {
-  "name": "chat-app",
+  "name": "chat-backend",
   "version": "1.0.0",
   "main": "index.js",
-  "repository": "https://github.com/IrynaShvets/chat-app.git",
+  "repository": "https://github.com/IrynaShvets/chat-backend.git",
   "author": "IrynaShvets <irinashwets@ukr.net>",
   "scripts": {
     "start": "node index.js",

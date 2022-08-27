@@ -21,3 +21,5 @@ yarn start
 ## client
 
 yarn start
+
+## To display chats, log in under the name "IRYNA" with the password "111111".
